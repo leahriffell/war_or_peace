@@ -1,7 +1,7 @@
 ## War or Peace
 
 ## Overview
-In this project, I wrote a program to simulate a game of [war](https://en.wikipedia.org/wiki/War_(card_game). A user will be able to create two players, and watch them ‘play’ the game.
+In this project, I wrote a program to simulate a game of [war](https://en.wikipedia.org/wiki/War %28card_game%29). A user will be able to create two players, and watch them ‘play’ the game.
 
 ## Learning Goals
 - Follow an interaction pattern
