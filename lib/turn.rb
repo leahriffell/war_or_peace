@@ -22,6 +22,7 @@ class Turn
   def winner
     # type == without `self` works here because ruby allows for an implicit self. Without it, it wasn't clear to me what object `type` was running on. Adding `self` doesn't change how this is run, but it makes it more explicit.
     if self.type == :basic
+      # get rid of these nested ifs by breaking out into diff. methods (ex: winner_basic). This will make it easier to understand what is going on here.
       if @player1.deck.cards[0].rank > @player2.deck.cards[0].rank
         @player1
       else
