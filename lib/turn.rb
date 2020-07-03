@@ -61,20 +61,20 @@ class Turn
     # AND DELETE. this method sends spoils pile to winner then deletes cards placed in spoils pile from both players hands. Doesn't seem like the right spot to delete, but when deleting before this method, it evaluates the winner based on updated arrays with the removal of the spoils pile, thus changing turn type and winner.
     if self.type == :basic
       winner.deck.cards.concat(@spoils_of_war)
-      @player1.deck.cards.shift
-      @player2.deck.cards.shift
+      # @player1.deck.cards.shift
+      # @player2.deck.cards.shift
     elsif self.type == :war
       winner.deck.cards.concat(@spoils_of_war)
-      3.times do
-        @player1.deck.cards.shift
-        @player2.deck.cards.shift
-      end
+      # 3.times do
+      #   @player1.deck.cards.shift
+      #   @player2.deck.cards.shift
+      # end
     else
-      3.times do
-        @player1.deck.cards.shift
-        @player2.deck.cards.shift
-      end
-    binding.pry
+      nil
+      # 3.times do
+      #   @player1.deck.cards.shift
+      #   @player2.deck.cards.shift
+      # end
     end
     # only add cards from the spoils pile if they are not already in the winner's deck of cards
 
@@ -88,5 +88,22 @@ class Turn
     # else self.type == :mutually_assured_destruction
     #   nil
     # end
+  end
+
+  def delete_existing_cards_from_players_deck
+    if self.type == :basic
+      @player1.deck.cards.shift
+      @player2.deck.cards.shift
+    elsif self.type == :war
+      3.times do
+        @player1.deck.cards.shift
+        @player2.deck.cards.shift
+      end
+    else
+      3.times do
+        @player1.deck.cards.shift
+        @player2.deck.cards.shift
+      end
+    end
   end
 end
