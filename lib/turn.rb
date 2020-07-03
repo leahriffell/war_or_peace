@@ -74,6 +74,7 @@ class Turn
         @player1.deck.cards.shift
         @player2.deck.cards.shift
       end
+    binding.pry
     end
     # only add cards from the spoils pile if they are not already in the winner's deck of cards
 

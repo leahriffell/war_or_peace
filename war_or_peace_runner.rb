@@ -2,7 +2,7 @@
 Dir[File.join(__dir__, 'lib', '*.rb')].each { |file| require file }
 
 class Game
-  attr_reader :standard_card_deck
+  attr_reader :standard_card_deck, :player1, :player2
 
   def create_standard_deck
     suits = [:club, :diamond, :heart, :spade]
@@ -44,34 +44,68 @@ class Game
     @shuffled_deck[26..52]
   end
 
-  def set_up_game
-  # Is there a way to automatically run a method whenever you run this file? So that the method doesn't have to explicitly be called?
+  def create_players
     shuffle_deck
     deal_player1_cards
     deal_player2_cards
     deck1 = Deck.new(deal_player1_cards)
     deck2 = Deck.new(deal_player2_cards)
-    p player1 = Player.new("Larry David", deck1)
-    p player2 = Player.new("Susie Greene", deck2)
+    @player1 = Player.new("Larry David", deck1)
+    @player2 = Player.new("Susie Greene", deck2)
+  end
+
+  def set_up_game
+  # Is there a way to automatically run a method whenever you run this file? So that the method doesn't have to explicitly be called?
+    create_players
+    # shuffle_deck
+    # deal_player1_cards
+    # deal_player2_cards
+    # deck1 = Deck.new(deal_player1_cards)
+    # deck2 = Deck.new(deal_player2_cards)
+    # player1 = Player.new("Larry David", deck1)
+    # player2 = Player.new("Susie Greene", deck2)
     p "Welcome to War! (or Peace) This game will be played with 52 cards.
     The players today are #{player1.name} and #{player2.name}.
     Type 'GO' to start the game!
     ------------------------------------------------------------------"
   end
 
+  def game_over?
+    player1.deck.cards.length == 0 || player2.deck.cards.length == 0
+  end
+
   def play_the_game
-    # this should live in a method to get the user input and thennn start game play.
-    if gets.chomp == "go" || gets.chomp == "GO"
-      "yay let's play!!"
-    end
+    round = 0
+    turn = Turn.new(@player1, @player2)
+
+    # until game_over? || round >= 1000000 do
+    15.times do
+      turn.pile_cards
+      turn.award_spoils
+      p round
+      p player1.deck.cards.length
+      p player2.deck.cards.length
+      if turn.winner == "No Winner"
+        p "no winner :("
+      else
+        p "#{turn.winner.name} #{turn.type}"
+      end
+      round += 1
   end
 end
 
-# game = Game.new
-# game.set_up_game
-# game.play_the_game
+  # def play_the_game
+  #   # user_response = gets.chomp
+  #   # if user_response == "GO" || "go" || "Go" || "gO"
+  #   #   # google a method that can allow for any casing combination on go
+  #     new_turn
+  #   # end
+  # end
+end
 
-
+game = Game.new
+game.set_up_game
+game.play_the_game
 #
 # turn1 = Turn.new(player1, player2)
 #
