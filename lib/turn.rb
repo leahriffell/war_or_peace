@@ -11,6 +11,7 @@ class Turn
 
   def type
     if @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards[2].rank == @player2.deck.cards[2].rank
+      # what happens when there's no cards left at rank 2?
       :mutually_assured_destruction
     elsif @player1.deck.cards[0].rank == @player2.deck.cards[0].rank
       :war
@@ -39,31 +40,52 @@ class Turn
     end
   end
 
+  # def delete_card
+  #   cards.shift
+  # end
+
   def pile_cards
     #spoils of war is the pile in the middle in a turn
     if self.type == :basic
       @spoils_of_war << @player1.deck.cards[0]
       @spoils_of_war << @player2.deck.cards[0]
     elsif self.type == :war
-      @spoils_of_war.concat(@player1.deck.cards[0..2])
-      @spoils_of_war.concat(@player2.deck.cards.concat[0..2])
-    else self.type == :mutually_assured_destruction
-      @player1.deck.cards.delete(0..2)
-      @player2.deck.cards.delete(0..2)
+        @spoils_of_war.concat(@player1.deck.cards[0..2])
+        @spoils_of_war.concat(@player2.deck.cards[0..2])
+    else
+      nil
     end
   end
 
   def award_spoils
-    # only add cards from the spoils pile if they are not already in the winner's deck of cards
-    spoil_cards_not_in_winner_deck = []
-
-    if self.type == :basic || self.type == :war
-      spoil_cards_not_in_winner_deck = @spoils_of_war.select do |card|
-        !winner.deck.cards.include?(card)
+    # AND DELETE. this method sends spoils pile to winner then deletes cards placed in spoils pile from both players hands. Doesn't seem like the right spot to delete, but when deleting before this method, it evaluates the winner based on updated arrays with the removal of the spoils pile, thus changing turn type and winner.
+    if self.type == :basic
+      winner.deck.cards.concat(@spoils_of_war)
+      @player1.deck.cards.shift
+      @player2.deck.cards.shift
+    elsif self.type == :war
+      winner.deck.cards.concat(@spoils_of_war)
+      3.times do
+        @player1.deck.cards.shift
+        @player2.deck.cards.shift
       end
-      winner.deck.cards.concat(spoil_cards_not_in_winner_deck)
-    else self.type == :mutually_assured_destruction
-      nil
+    else
+      3.times do
+        @player1.deck.cards.shift
+        @player2.deck.cards.shift
+      end
     end
+    # only add cards from the spoils pile if they are not already in the winner's deck of cards
+
+    # spoil_cards_not_in_winner_deck = []
+    #
+    # if self.type == :basic || self.type == :war
+    #   spoil_cards_not_in_winner_deck = @spoils_of_war.select do |card|
+    #     !winner.deck.cards.include?(card)
+    #   end
+    #   winner.deck.cards.concat(spoil_cards_not_in_winner_deck)
+    # else self.type == :mutually_assured_destruction
+    #   nil
+    # end
   end
 end
