@@ -121,6 +121,7 @@ class TurnTest < Minitest::Test
 
     turn.pile_cards
     turn.award_spoils
+    turn.delete_existing_cards_from_players_deck
     assert_equal [card2, card5, card8, card1, card3], turn.player1.deck.cards
   end
 
@@ -144,6 +145,7 @@ class TurnTest < Minitest::Test
     # after piling cards, player2 (winner) should have gotten rid of card4, card3, card6
     turn.award_spoils
     # after awarding, player 2 should have card7, card1, card2, card5, card4, card3, card 6
+    turn.delete_existing_cards_from_players_deck
     assert_equal [card7, card1, card2, card5, card4, card3, card6], turn.player2.deck.cards
   end
 
@@ -166,6 +168,7 @@ class TurnTest < Minitest::Test
 
     turn.pile_cards
     turn.award_spoils
+    turn.delete_existing_cards_from_players_deck
     assert_equal [card8], player1.deck.cards
   end
 end
