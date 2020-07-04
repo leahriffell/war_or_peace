@@ -10,11 +10,18 @@ class Turn
   end
 
   def type
-    if @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards[2].rank == @player2.deck.cards[2].rank
-      # what happens when there's no cards left at rank 2?
-      :mutually_assured_destruction
-    elsif @player1.deck.cards[0].rank == @player2.deck.cards[0].rank
-      :war
+    if nil
+      p "this needs fixed"
+    elsif @player1.deck.cards.length > 2 && @player2.deck.cards.length > 2
+        if
+        @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards[2].rank == @player2.deck.cards[2].rank
+        # what happens when there's no cards left at rank 2?
+        :mutually_assured_destruction
+      elsif @player1.deck.cards[0].rank == @player2.deck.cards[0].rank
+        :war
+      else
+        :basic
+      end
     else
       :basic
     end
