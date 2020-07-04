@@ -2,12 +2,14 @@ require 'pry'
 
 class Turn
   attr_reader :player1, :player2, :spoils_of_war
+  attr_accessor :round
 
   def initialize(player1, player2)
     @player1 = player1
     @player2 = player2
     @spoils_of_war = []
     @cards_removed_from_game_in_mad = []
+    @round = 0
   end
 
   def type
@@ -72,7 +74,6 @@ class Turn
     unless @spoils_of_war.empty?
       winner.deck.cards.concat(@spoils_of_war)
     end
-    @spoils_of_war = []
     # only add cards from the spoils pile if they are not already in the winner's deck of cards
 
     # spoil_cards_not_in_winner_deck = []
@@ -102,5 +103,6 @@ class Turn
         @player2.deck.cards.shift
       end
     end
+    @spoils_of_war = []
   end
 end

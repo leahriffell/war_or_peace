@@ -9,34 +9,27 @@ class Start
   end
 
   def game_over?
-    @turn.player1.deck.cards.length == 0 || @turn.player2.deck.cards.length == 0
+    @turn.player1.deck.cards.length < 0 || @turn.player2.deck.cards.length < 0 || @turn.round > 1000001
   end
 
 
   def play_the_game
-    round = 0
-    until game_over? || round > 1000000 do
+    until game_over?
+    # 10.times do
+      @turn.round += 1
       @turn.pile_cards
       @turn.award_spoils
-      @turn.delete_existing_cards_from_players_deck
-      p round
       p @turn.player1.deck.cards.length
       p @turn.player2.deck.cards.length
-      if @turn.winner == "No Winner"
-        p "no winner"
-      else
-        p "#{@turn.winner.name} #{@turn.type}"
-      end
-      round += 1
-      # turn = Turn.new(turn.player1, turn.player2)
+        if @turn.type == :basic
+          p "Turn #{@turn.round}: #{@turn.winner.name} won #{@turn.spoils_of_war.length} cards"
+        elsif @turn.type == :war
+          p "Turn #{@turn.round}: WAR - #{@turn.winner.name} won #{@turn.spoils_of_war.length} cards"
+        else
+          p "Turn #{@turn.round}: *mutually assured destruction* #{@turn.cards_removed_from_game_in_mad} removed from play"
+        end
+      @turn.delete_existing_cards_from_players_deck
+    end
+    p "#{@turn.winner.name} won the game!"
   end
-end
-
-  # def play_the_game
-  #   # user_response = gets.chomp
-  #   # if user_response == "GO" || "go" || "Go" || "gO"
-  #   #   # google a method that can allow for any casing combination on go
-  #     new_turn
-  #   # end
-  # end
 end
