@@ -15,7 +15,6 @@ class Start
 
   def play_the_game
     until game_over?
-    # 10.times do
       @turn.round += 1
       @turn.pile_cards
       @turn.award_spoils
