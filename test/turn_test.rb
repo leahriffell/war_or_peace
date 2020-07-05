@@ -122,7 +122,8 @@ class TurnTest < Minitest::Test
     turn.pile_cards
     turn.award_spoils
     turn.delete_existing_cards_from_players_deck
-    assert_equal [card2, card5, card8, card1, card3], turn.player1.deck.cards
+    # using .any will make sure that the order of cards doesn't matter, just that they are included or not
+    assert_equal false, ([card2, card5, card8, card1, card3] & [turn.player1.deck.cards]).any?
   end
 
   def test_award_spoils_pile_to_winner_in_war_turn_type
@@ -146,7 +147,8 @@ class TurnTest < Minitest::Test
     turn.award_spoils
     # after awarding, player 2 should have card7, card1, card2, card5, card4, card3, card 6
     turn.delete_existing_cards_from_players_deck
-    assert_equal [card7, card1, card2, card5, card4, card3, card6], turn.player2.deck.cards
+    # using .any will make sure that the order of cards doesn't matter, just that they are included or not
+    assert_equal false, ([card7, card1, card2, card5, card4, card3, card6] & [turn.player2.deck.cards]).any?
   end
 
   def test_award_spoils_pile_to_winner_in_mutually_assured_destruction_turn_type

@@ -1,7 +1,7 @@
 require 'pry'
 
 class Turn
-  attr_reader :player1, :player2, :spoils_of_war
+  attr_reader :player1, :player2, :spoils_of_war, :cards_removed_from_game_in_mad
   attr_accessor :round
 
   def initialize(player1, player2)
