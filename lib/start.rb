@@ -20,7 +20,9 @@ class Start
       @turn.award_spoils
       p @turn.player1.deck.cards.length
       p @turn.player2.deck.cards.length
-        if @turn.type == :basic
+        if @turn.type == "Draw"
+          p "---- DRAW ----"
+        elsif @turn.type == :basic
           p "Turn #{@turn.round}: #{@turn.winner.name} won #{@turn.spoils_of_war.length} cards"
         elsif @turn.type == :war
           p "Turn #{@turn.round}: WAR - #{@turn.winner.name} won #{@turn.spoils_of_war.length} cards"
