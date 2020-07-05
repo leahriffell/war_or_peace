@@ -101,6 +101,8 @@ class TurnTest < Minitest::Test
     assert_equal [card1, card3], turn.spoils_of_war
   end
 
+  # add a test to see if piled cards are removed from each person's hand
+
   def test_award_spoils_pile_to_winner_in_basic_turn_type
     # for basic type turn
     card1 = Card.new(:heart, 'Jack', 11)
@@ -118,7 +120,10 @@ class TurnTest < Minitest::Test
     turn = Turn.new(player1, player2)
 
     turn.pile_cards
-    assert_equal [card1, card2, card5, card8, card3], turn.award_spoils
+    turn.award_spoils
+    turn.delete_existing_cards_from_players_deck
+    # using .any will make sure that the order of cards doesn't matter, just that they are included or not
+    assert_equal false, ([card2, card5, card8, card1, card3] & [turn.player1.deck.cards]).any?
   end
 
   def test_award_spoils_pile_to_winner_in_war_turn_type
@@ -138,7 +143,12 @@ class TurnTest < Minitest::Test
     turn = Turn.new(player1, player2)
 
     turn.pile_cards
-    assert_equal [card4, card3, card6, card7, card1, card2, card5], turn.award_spoils
+    # after piling cards, player2 (winner) should have gotten rid of card4, card3, card6
+    turn.award_spoils
+    # after awarding, player 2 should have card7, card1, card2, card5, card4, card3, card 6
+    turn.delete_existing_cards_from_players_deck
+    # using .any will make sure that the order of cards doesn't matter, just that they are included or not
+    assert_equal false, ([card7, card1, card2, card5, card4, card3, card6] & [turn.player2.deck.cards]).any?
   end
 
   def test_award_spoils_pile_to_winner_in_mutually_assured_destruction_turn_type
@@ -159,6 +169,8 @@ class TurnTest < Minitest::Test
     turn = Turn.new(player1, player2)
 
     turn.pile_cards
-    assert_nil turn.award_spoils
+    turn.award_spoils
+    turn.delete_existing_cards_from_players_deck
+    assert_equal [card8], player1.deck.cards
   end
 end

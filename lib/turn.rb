@@ -1,21 +1,33 @@
 require 'pry'
 
 class Turn
-  attr_reader :player1, :player2, :spoils_of_war
+  attr_reader :player1, :player2, :spoils_of_war, :cards_removed_from_game_in_mad
+  attr_accessor :round
 
   def initialize(player1, player2)
     @player1 = player1
     @player2 = player2
     @spoils_of_war = []
+    @cards_removed_from_game_in_mad = []
+    @round = 0
+  end
+
+  def short_deck?
+    player1.deck.cards.length <= 2 || player2.deck.cards.length <= 2
   end
 
   def type
-    if @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards[2].rank == @player2.deck.cards[2].rank
-      :mutually_assured_destruction
-    elsif @player1.deck.cards[0].rank == @player2.deck.cards[0].rank
-      :war
+    if short_deck? == false
+      if player1.deck.cards[0].rank == player2.deck.cards[0].rank && player1.deck.cards[2].rank == player2.deck.cards[2].rank
+      # what happens when there's no cards left at rank 2?
+        :mutually_assured_destruction
+      elsif player1.deck.cards[0].rank == player2.deck.cards[0].rank
+        :war
+      else
+        :basic
+      end
     else
-      :basic
+      :short_deck
     end
   end
 
@@ -34,36 +46,91 @@ class Turn
       else
         @player2
       end
-    else self.type == :mutually_assured_destruction
+    elsif self.type == :mutually_assured_destruction
       "No Winner"
+    else self.type == :short_deck
+      if @player1.deck.cards.length == 2
+        if @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards[1].rank > @player2.deck.cards[1].rank
+          @player1
+        else @player2.deck.cards[0].rank == @player1.deck.cards[0].rank && @player2.deck.cards[1].rank > @player1.deck.cards[1].rank
+          @player2
+        end
+      elsif @player2.deck.cards.length == 2
+        if @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards[1].rank > @player2.deck.cards[1].rank
+          @player1
+        else @player2.deck.cards[0].rank == @player1.deck.cards[0].rank && @player2.deck.cards[1].rank > @player1.deck.cards[1].rank
+          @player2
+        end
+      elsif @player1.deck.cards.length > 1 && @player1.deck.cards.length > 1
+        if @player1.deck.cards[0].rank > @player2.deck.cards[0].rank
+          @player1
+        elsif @player2.deck.cards[0].rank > @player1.deck.cards[0].rank
+          @player2
+        elsif @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards.rank[1] == @player2.deck.cards.rank[1]
+          "Draw"
+        end
+      else @player1.deck.cards.length == 0 || @player1.deck.cards.length == 0
+        if @player1.deck.cards.length == 0
+          @player1
+        elsif @player2.deck.cards.length == 0
+          @player2
+        end
+      end
     end
   end
 
+  # def delete_card
+  #   cards.shift
+  # end
+
   def pile_cards
     #spoils of war is the pile in the middle in a turn
-    if self.type == :basic
+    if type == :basic
       @spoils_of_war << @player1.deck.cards[0]
       @spoils_of_war << @player2.deck.cards[0]
-    elsif self.type == :war
+    elsif type == :war
       @spoils_of_war.concat(@player1.deck.cards[0..2])
-      @spoils_of_war.concat(@player2.deck.cards.concat[0..2])
-    else self.type == :mutually_assured_destruction
-      @player1.deck.cards.delete(0..2)
-      @player2.deck.cards.delete(0..2)
+      @spoils_of_war.concat(@player2.deck.cards[0..2])
+    else
+      @cards_removed_from_game_in_mad.concat(@player1.deck.cards[0..2])
+      @cards_removed_from_game_in_mad.concat(@player2.deck.cards[0..2])
     end
   end
 
   def award_spoils
-    # only add cards from the spoils pile if they are not already in the winner's deck of cards
-    spoil_cards_not_in_winner_deck = []
-
-    if self.type == :basic || self.type == :war
-      spoil_cards_not_in_winner_deck = @spoils_of_war.select do |card|
-        !winner.deck.cards.include?(card)
-      end
-      winner.deck.cards.concat(spoil_cards_not_in_winner_deck)
-    else self.type == :mutually_assured_destruction
-      nil
+    # AND DELETE. this method sends spoils pile to winner then deletes cards placed in spoils pile from both players hands. Doesn't seem like the right spot to delete, but when deleting before this method, it evaluates the winner based on updated arrays with the removal of the spoils pile, thus changing turn type and winner.
+    unless @spoils_of_war.empty?
+      winner.deck.cards.concat(@spoils_of_war.shuffle)
     end
+    # only add cards from the spoils pile if they are not already in the winner's deck of cards
+
+    # spoil_cards_not_in_winner_deck = []
+    #
+    # if self.type == :basic || self.type == :war
+    #   spoil_cards_not_in_winner_deck = @spoils_of_war.select do |card|
+    #     !winner.deck.cards.include?(card)
+    #   end
+    #   winner.deck.cards.concat(spoil_cards_not_in_winner_deck)
+    # else self.type == :mutually_assured_destruction
+    #   nil
+    # end
+  end
+
+  def delete_existing_cards_from_players_deck
+    if self.type == :basic
+      @player1.deck.cards.shift
+      @player2.deck.cards.shift
+    elsif self.type == :war
+      3.times do
+        @player1.deck.cards.shift
+        @player2.deck.cards.shift
+      end
+    else
+      3.times do
+        @player1.deck.cards.shift
+        @player2.deck.cards.shift
+      end
+    end
+    @spoils_of_war = []
   end
 end
