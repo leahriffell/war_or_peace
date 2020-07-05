@@ -19,10 +19,10 @@ turn = Turn.new(player1, player2)
 
 loop do
   start = gets.chomp
-  if start == "GO" || "Go"
+  if start == "GO" || start == "Go"
     Start.new(turn)
   else
-    "try typing GO or Go"
+    p "try typing GO or Go"
   end
 end
 # loop do

@@ -12,14 +12,14 @@ class Turn
     @round = 0
   end
 
+  def short_deck?
+    player1.deck.cards.length <= 2 || player2.deck.cards.length <= 2
+  end
+
   def type
-    if nil
-      p "this needs fixed"
-      binding.pry
-    elsif player1.deck.cards.length > 2 && player2.deck.cards.length > 2
-        if
-        player1.deck.cards[0].rank == player2.deck.cards[0].rank && player1.deck.cards[2].rank == player2.deck.cards[2].rank
-        # what happens when there's no cards left at rank 2?
+    if short_deck? == false
+      if player1.deck.cards[0].rank == player2.deck.cards[0].rank && player1.deck.cards[2].rank == player2.deck.cards[2].rank
+      # what happens when there's no cards left at rank 2?
         :mutually_assured_destruction
       elsif player1.deck.cards[0].rank == player2.deck.cards[0].rank
         :war
@@ -27,7 +27,7 @@ class Turn
         :basic
       end
     else
-      :basic
+      :short_deck
     end
   end
 
@@ -46,8 +46,36 @@ class Turn
       else
         @player2
       end
-    else self.type == :mutually_assured_destruction
+    elsif self.type == :mutually_assured_destruction
       "No Winner"
+    else self.type == :short_deck
+      if @player1.deck.cards.length == 2
+        if @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards[1].rank > @player2.deck.cards[1].rank
+          @player1
+        else @player2.deck.cards[0].rank == @player1.deck.cards[0].rank && @player2.deck.cards[1].rank > @player1.deck.cards[1].rank
+          @player2
+        end
+      elsif @player2.deck.cards.length == 2
+        if @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards[1].rank > @player2.deck.cards[1].rank
+          @player1
+        else @player2.deck.cards[0].rank == @player1.deck.cards[0].rank && @player2.deck.cards[1].rank > @player1.deck.cards[1].rank
+          @player2
+        end
+      elsif @player1.deck.cards.length > 1 && @player1.deck.cards.length > 1
+        if @player1.deck.cards[0].rank > @player2.deck.cards[0].rank
+          @player1
+        elsif @player2.deck.cards[0].rank > @player1.deck.cards[0].rank
+          @player2
+        elsif @player1.deck.cards[0].rank == @player2.deck.cards[0].rank && @player1.deck.cards.rank[1] == @player2.deck.cards.rank[1]
+          "Draw"
+        end
+      else @player1.deck.cards.length == 0 || @player1.deck.cards.length == 0
+        if @player1.deck.cards.length == 0
+          @player1
+        elsif @player2.deck.cards.length == 0
+          @player2
+        end
+      end
     end
   end
 

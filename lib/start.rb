@@ -9,7 +9,7 @@ class Start
   end
 
   def game_over?
-    @turn.player1.deck.cards.length < 0 || @turn.player2.deck.cards.length < 0 || @turn.round > 1000001
+    @turn.player1.deck.cards.length == 0 || @turn.player2.deck.cards.length == 0 || @turn.round > 1000001
   end
 
 
