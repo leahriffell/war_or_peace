@@ -1,7 +1,7 @@
 ## War or Peace
 
 ## Overview
-In this project, I wrote a program to simulate a game of war. A user will be able to create two players, and watch them ‘play’ the game.
+In this project, I wrote a program to simulate a game of war. By running the war_or_peace_runner.rb file, the user will be able to watch two players play the game.
 
 ## Learning Goals
 - Follow an interaction pattern
